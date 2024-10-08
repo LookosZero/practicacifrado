@@ -17,10 +17,26 @@ public class EmpaquetarFactura {
 			System.exit(1);
 		}
 
+        byte[] facturaSinCifrar = leerFactura(args[1]);
+
         
 
 
+
+
         
+    }
+
+    public static PublicKey leerClavePublica(String path){
+        File file = new File(path);
+        
+        try {
+            
+        } catch (Exception e) {
+            System.err.println("No se pudo leer el archivo de claves: " + e.getMessage());
+        }
+
+
     }
 
     public static byte[] leerFactura(String path){
