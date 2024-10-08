@@ -1,5 +1,6 @@
 import java.io.*;
-
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.*;
 import java.security.spec.*;
 import java.util.stream.Stream;
@@ -17,41 +18,27 @@ public class EmpaquetarFactura {
 			System.exit(1);
 		}
 
+        Security.addProvider(new BouncyCastleProvider());
+
         byte[] facturaSinCifrar = leerFactura(args[1]);
 
+        PublicKey clavePublica = leerClavePublica(args[2]);
+
         
-
-
 
 
         
     }
 
-    public static PublicKey leerClavePublica(String path){
-        File file = new File(path);
-        
-        try {
-            
-        } catch (Exception e) {
-            System.err.println("No se pudo leer el archivo de claves: " + e.getMessage());
-        }
+    
 
-
+    private static byte[] leerFactura(String path) throws IOException {
+        return Files.readAllBytes(Paths.get(path));
     }
 
-    public static byte[] leerFactura(String path){
-        File file = new File(path);
-        byte[] factura = new byte[(int) file.length()];
+    private static PublicKey leerClavePublica(String path){
 
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            fis.read(factura);
-            
-        } catch (Exception e) {
-            System.err.println("No se pudo leer JSON de la factura: " + e.getMessage());
-        }
-        
-        return factura;
+
     }
 
     public static void mensajeAyuda() {
