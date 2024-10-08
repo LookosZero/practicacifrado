@@ -1,3 +1,4 @@
+package practicacifrado;
 
 import java.io.*;
 
@@ -11,8 +12,8 @@ import javax.crypto.spec.*;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-public class SellarFactura {
+public class DesempaquetarFactura {
     public static void main(String[] args) {
-
+        
     }
 }
