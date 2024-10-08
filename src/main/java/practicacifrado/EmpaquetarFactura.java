@@ -24,8 +24,12 @@ public class EmpaquetarFactura {
 
         byte[] facturaSinCifrar = leerFactura(args[1]);
 
-        PublicKey clavePublica = leerClavePublica(args[2]);
-        PrivateKey clavePrivada = leerClavePrivada(args[3]);
+        PublicKey clavePublica = Utils.leerClavePublica(args[2]);
+        PrivateKey clavePrivada = Utils.leerClavePrivada(args[3]);
+
+        
+
+
 
         
 

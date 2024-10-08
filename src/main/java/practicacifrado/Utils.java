@@ -15,11 +15,11 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class Utils {
     
-    public PublicKey leerClavePublica(String path) throws Exception{
+    public static PublicKey leerClavePublica(String path) throws Exception{
 
         Security.addProvider(new BouncyCastleProvider());
 
-        KeyFactory keyFactoryRSA = KeyFactory.getInstance("RSA");
+        KeyFactory keyFactoryRSA = KeyFactory.getInstance("RSA", "BC");
 
         byte[] bufferPub = Files.readAllBytes(Paths.get(path + ".publica"));
 
@@ -29,12 +29,18 @@ public class Utils {
         return clavePublica;
     }
 
-    public PublicKey leerClavePrivada(String path){
+    public static PrivateKey leerClavePrivada(String path) throws Exception{
+        Security.addProvider(new BouncyCastleProvider());
 
+        KeyFactory keyFactoryRSA = KeyFactory.getInstance("RSA", "BC");
 
+        byte[] bufferPriv = Files.readAllBytes(Paths.get(path + ".privada"));
 
+        PKCS8EncodedKeySpec clavePrivadaSpec = new PKCS8EncodedKeySpec(bufferPriv);
+		PrivateKey clavePrivada = keyFactoryRSA.generatePrivate(clavePrivadaSpec);
+
+        return clavePrivada;
     }
-
 
 
 }
