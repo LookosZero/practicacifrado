@@ -39,7 +39,7 @@ public class EmpaquetarFactura {
         SecretKey secretKey = keyGen.generateKey();
 
         // Se utiliza la clase cipher para cifrar la factura con la secretKey que generamos en DES
-        Cipher desCipher = Cipher.getInstance("DES");
+        Cipher desCipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
         desCipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
         // Se cifra la factura utilizando update() y doFinal()
@@ -50,7 +50,23 @@ public class EmpaquetarFactura {
         paqueteEmpresa.anadirBloque("facturaCifrada", facturaCifrada);
         
         // Cifrar la clave publica de hacienda con RSA
+        /*
+         * La clave DES que se utilizo para cifrar la factura se cifra con la clave publica de hacienda,
+         * esto es para que solo Hacienda pueda descifrar esta clave DES con su clave privada y acceder
+         * a los datos de la factura.
+         */
+        Cipher rsaCipher = Cipher.getInstance("RSA/ECB/PKCS5Padding");
+        rsaCipher.init(Cipher.ENCRYPT_MODE, publicKey);
+
+        byte[] clavePublicaCifrada = rsaCipher.update(publicKey.getEncoded());
+        clavePublicaCifrada = rsaCipher.doFinal(clavePublicaCifrada);
+
+        //
+
         
+
+
+
 
 
 
