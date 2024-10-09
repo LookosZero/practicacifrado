@@ -30,6 +30,9 @@ public class EmpaquetarFactura {
         PublicKey publicKey = Utils.leerClavePublica(args[2]);
         PrivateKey privateKey = Utils.leerClavePrivada(args[3]);
 
+        //Crear el paquete donde se guardara todo cifrado.
+        Paquete paqueteEmpresa = new Paquete("paqueteEmpresa");
+
         // Inicializamos la clave en DES aleatoria con KeyGenerator que utilizara para cifrar la factura
         KeyGenerator keyGen = KeyGenerator.getInstance("DES");
         keyGen.init(56);
@@ -42,6 +45,12 @@ public class EmpaquetarFactura {
         // Se cifra la factura utilizando update() y doFinal()
         byte[] facturaCifrada = desCipher.update(facturaSinCifrar);
         facturaCifrada = desCipher.doFinal();
+
+        //Se añade el bloque de la factura cifrada al paquete
+        paqueteEmpresa.anadirBloque("facturaCifrada", facturaCifrada);
+        
+        // Cifrar la clave publica de hacienda con RSA
+        
 
 
 
