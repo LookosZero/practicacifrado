@@ -7,7 +7,9 @@ import java.security.*;
 import java.security.spec.*;
 import java.util.stream.Stream;
 
-import javax.crypto.*;
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.crypto.interfaces.*;
 import javax.crypto.spec.*;
 
@@ -22,12 +24,36 @@ public class EmpaquetarFactura {
 
         Security.addProvider(new BouncyCastleProvider());
 
+        // Leer la factura y las claves de los ficheros
         byte[] facturaSinCifrar = leerFactura(args[1]);
 
-        PublicKey clavePublica = Utils.leerClavePublica(args[2]);
-        PrivateKey clavePrivada = Utils.leerClavePrivada(args[3]);
+        PublicKey publicKey = Utils.leerClavePublica(args[2]);
+        PrivateKey privateKey = Utils.leerClavePrivada(args[3]);
 
-        
+        // Inicializamos la clave en DES aleatoria con KeyGenerator que utilizara para cifrar la factura
+        KeyGenerator keyGen = KeyGenerator.getInstance("DES");
+        keyGen.init(56);
+        SecretKey secretKey = keyGen.generateKey();
+
+        // Se utiliza la clase cipher para cifrar la factura con la secretKey que generamos en DES
+        Cipher desCipher = Cipher.getInstance("DES");
+        desCipher.init(Cipher.ENCRYPT_MODE, secretKey);
+
+        // Se cifra la factura utilizando update() y doFinal()
+        byte[] facturaCifrada = desCipher.update(facturaSinCifrar);
+        facturaCifrada = desCipher.doFinal();
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
