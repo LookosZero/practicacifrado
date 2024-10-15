@@ -20,7 +20,7 @@ public class SellarFactura {
 
     public static void main(String[] args) {
         if(args.length!=3){
-            System.out.println("java -cp [...] SellarFactura <nombre paquete> <ficheros con las claves necesarias>");
+            System.out.println("java -cp [...] SellarFactura <nombre paquete> <path clavePrivadaSellado> <path clavePublicaEmpresa>");
             System.exit(1);
         }
         //BouncyCastle

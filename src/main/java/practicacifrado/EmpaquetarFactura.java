@@ -103,7 +103,7 @@ public class EmpaquetarFactura {
 
     public static void mensajeAyuda() {
 		System.out.println("Empaqueta la factura en un paquete cifrado que contiene la factura cifrada, la clave cifrada y la firma.");
-		System.out.println("\tSintaxis: java EmpaquetarFactura <JSON factura> <nombre paquete> <path clave publica> <path clave privada>");
+		System.out.println("\tSintaxis: java EmpaquetarFactura <JSON factura> <nombre paquete> <path ClavePublicaHacienda> <path ClavePrivadaEmpresa>");
 		System.out.println();
 	}
 
