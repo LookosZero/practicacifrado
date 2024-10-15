@@ -37,13 +37,13 @@ public class EmpaquetarFactura {
 
         PublicKey publicKeyHacienda = Utils.leerClavePublica(args[2]);
         if (publicKeyHacienda == null) {
-            System.out.println("El fichero no contiene la clave publica.");
+            System.out.println("El fichero no contiene la clave publica de hacienda.");
             return;
         }
 
         PrivateKey privateKeyEmpresa = Utils.leerClavePrivada(args[3]);
         if(privateKeyEmpresa == null){
-            System.out.println("El fichero no contiene la clave privada.");
+            System.out.println("El fichero no contiene la clave privada de la empresa.");
             return;
         }
 
@@ -56,12 +56,11 @@ public class EmpaquetarFactura {
         SecretKey secretKey = keyGen.generateKey();
 
         // Se utiliza la clase cipher para cifrar la factura con la secretKey que generamos en DES
-        Cipher desCipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
-        desCipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        Cipher DESCipher = Cipher.getInstance("DES");
+        DESCipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
-        // Se cifra la factura utilizando update() y doFinal()
-        byte[] facturaCifrada = desCipher.update(facturaSinCifrar);
-        facturaCifrada = desCipher.doFinal();
+        // Se cifra la factura utilizando doFinal()
+        byte[] facturaCifrada = DESCipher.doFinal(facturaSinCifrar);
 
         //Se añade el bloque de la factura cifrada al paquete
         paqueteEmpresa.anadirBloque("facturaCifrada", facturaCifrada);
@@ -72,11 +71,11 @@ public class EmpaquetarFactura {
          * esto es para que solo Hacienda pueda descifrar esta clave DES con su clave privada y acceder
          * a los datos de la factura.
          */
-        Cipher rsaCipher = Cipher.getInstance("RSA");
-        rsaCipher.init(Cipher.ENCRYPT_MODE, publicKeyHacienda);
+        Cipher RSACipher = Cipher.getInstance("RSA");
+        RSACipher.init(Cipher.ENCRYPT_MODE, publicKeyHacienda);
 
         byte[] claveDES = secretKey.getEncoded();
-        byte[] claveDESCifrada = rsaCipher.doFinal(claveDES);
+        byte[] claveDESCifrada = RSACipher.doFinal(claveDES);
 
         //Añadimos la clave cifrada al paquete
         paqueteEmpresa.anadirBloque("claveCifrada", claveDESCifrada);
@@ -91,35 +90,10 @@ public class EmpaquetarFactura {
         //Añadimos la firma al paquete
         paqueteEmpresa.anadirBloque("firma", firmaGenerada);
 
+        //Escribimos el paquete a un fichero
         paqueteEmpresa.escribirPaquete(args[1]);
-
         
         System.out.println("Generado el paquete de la empresa.");
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-
         
     }
 
@@ -129,7 +103,7 @@ public class EmpaquetarFactura {
 
     public static void mensajeAyuda() {
 		System.out.println("Empaqueta la factura en un paquete cifrado que contiene la factura cifrada, la clave cifrada y la firma.");
-		System.out.println("\tSintaxis:   java EmpaquetarFactura <JSON factura> <nombre paquete> <path clave publica> <path clave privada>");
+		System.out.println("\tSintaxis: java EmpaquetarFactura <JSON factura> <nombre paquete> <path clave publica> <path clave privada>");
 		System.out.println();
 	}
 

@@ -17,9 +17,6 @@ import javax.crypto.spec.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class SellarFactura {
-    
-
-
 
     public static void main(String[] args) {
         if(args.length!=3){
@@ -28,8 +25,6 @@ public class SellarFactura {
         }
         //BouncyCastle
         Security.addProvider(new BouncyCastleProvider());
-
-        
         
         Paquete paquete = new Paquete(args[0]);
         PublicKey clavePublicaEmpresa=null;
