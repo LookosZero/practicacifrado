@@ -40,14 +40,16 @@ public class SellarFactura {
         byte[] contenidoPaquete =paquete.getContenidoBloque("facturaCifrada");
         if(contenidoPaquete==null){
             System.out.println("El paquete no contiene la factura.");
-            return;}
+            return;
+        }
 
 
         //obtenemos la firma del paquete y comprobamos que corresponda con la empresa
         byte[] firmaPaquete = paquete.getContenidoBloque("firma");        
         if(!verificarFirma(firmaPaquete, contenidoPaquete, clavePublicaEmpresa)){
             System.out.println("La empresa que presenta la factura no es la misma que la que creó el paquete.");
-            return;}
+            return;
+        }
 
 
         //obtenemos timestamp
