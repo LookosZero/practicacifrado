@@ -42,7 +42,7 @@ public class SellarFactura {
         }
         
         //se obtiene el contenido del paquete (factura) y si esta vacio se sale del programa
-        byte[] contenidoPaquete =paquete.getContenidoBloque("factura");
+        byte[] contenidoPaquete =paquete.getContenidoBloque("facturaCifrada");
         if(contenidoPaquete==null){
             System.out.println("El paquete no contiene la factura.");
             return;}

@@ -26,9 +26,22 @@ public class EmpaquetarFactura {
 
         // Leer la factura y las claves de los ficheros
         byte[] facturaSinCifrar = leerFactura(args[1]);
+        if (facturaSinCifrar == null) {
+            System.out.println("El fichero no contiene la factura.");
+            return;
+        }
 
         PublicKey publicKey = Utils.leerClavePublica(args[2]);
+        if (publicKey == null) {
+            System.out.println("El fichero no contiene la clave publica.");
+            return;
+        }
+
         PrivateKey privateKey = Utils.leerClavePrivada(args[3]);
+        if(privateKey == null){
+            System.out.println("El fichero no contiene la clave privada.");
+            return;
+        }
 
         //Crear el paquete donde se guardara todo cifrado.
         Paquete paqueteEmpresa = new Paquete("paqueteEmpresa");
@@ -48,7 +61,7 @@ public class EmpaquetarFactura {
 
         //Se añade el bloque de la factura cifrada al paquete
         paqueteEmpresa.anadirBloque("facturaCifrada", facturaCifrada);
-        
+         
         // Cifrar la clave publica de hacienda con RSA
         /*
          * La clave DES que se utilizo para cifrar la factura se cifra con la clave publica de hacienda,
