@@ -3,7 +3,11 @@ package practicacifrado;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.*;
+import java.security.MessageDigest;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Security;
+import java.security.Signature;
 import java.security.spec.*;
 import java.util.stream.Stream;
 
@@ -19,26 +23,26 @@ public class EmpaquetarFactura {
     public static void main(String[] args) throws Exception {
         if (args.length != 4) {
 			mensajeAyuda();
-			System.exit(1);
+			return;
 		}
 
         Security.addProvider(new BouncyCastleProvider());
 
         // Leer la factura y las claves de los ficheros
-        byte[] facturaSinCifrar = leerFactura(args[1]);
+        byte[] facturaSinCifrar = leerFactura(args[0]);
         if (facturaSinCifrar == null) {
             System.out.println("El fichero no contiene la factura.");
             return;
         }
 
-        PublicKey publicKey = Utils.leerClavePublica(args[2]);
-        if (publicKey == null) {
+        PublicKey publicKeyHacienda = Utils.leerClavePublica(args[2]);
+        if (publicKeyHacienda == null) {
             System.out.println("El fichero no contiene la clave publica.");
             return;
         }
 
-        PrivateKey privateKey = Utils.leerClavePrivada(args[3]);
-        if(privateKey == null){
+        PrivateKey privateKeyEmpresa = Utils.leerClavePrivada(args[3]);
+        if(privateKeyEmpresa == null){
             System.out.println("El fichero no contiene la clave privada.");
             return;
         }
@@ -68,13 +72,31 @@ public class EmpaquetarFactura {
          * esto es para que solo Hacienda pueda descifrar esta clave DES con su clave privada y acceder
          * a los datos de la factura.
          */
-        Cipher rsaCipher = Cipher.getInstance("RSA/ECB/PKCS5Padding");
-        rsaCipher.init(Cipher.ENCRYPT_MODE, publicKey);
+        Cipher rsaCipher = Cipher.getInstance("RSA");
+        rsaCipher.init(Cipher.ENCRYPT_MODE, publicKeyHacienda);
 
-        byte[] clavePublicaCifrada = rsaCipher.update(publicKey.getEncoded());
-        clavePublicaCifrada = rsaCipher.doFinal(clavePublicaCifrada);
+        byte[] claveDES = secretKey.getEncoded();
+        byte[] claveDESCifrada = rsaCipher.doFinal(claveDES);
 
-        //
+        //Añadimos la clave cifrada al paquete
+        paqueteEmpresa.anadirBloque("claveCifrada", claveDESCifrada);
+
+        //Crear la firma del resumen utilizando la clave privada de la empresa
+        Signature firma = Signature.getInstance("SHA256withRSA");
+        firma.initSign(privateKeyEmpresa);
+        firma.update(facturaCifrada);
+        firma.update(claveDESCifrada);
+        byte[] firmaGenerada = firma.sign();
+
+        //Añadimos la firma al paquete
+        paqueteEmpresa.anadirBloque("firma", firmaGenerada);
+
+        paqueteEmpresa.escribirPaquete(args[1]);
+
+        
+        System.out.println("Generado el paquete de la empresa.");
+
+
 
         
 
