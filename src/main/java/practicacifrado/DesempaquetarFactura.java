@@ -21,7 +21,6 @@ public class DesempaquetarFactura {
         }
 
         Security.addProvider(new BouncyCastleProvider());
-
         
         Paquete paquete = new Paquete(args[0]);
         
@@ -46,19 +45,25 @@ public class DesempaquetarFactura {
             return;
         }
 
-
-        // Leer las claves de los ficheros
+        // Leer las clave privada de Hacienda del fichero
         PrivateKey privateKeyHacienda = Utils.leerClavePrivada(args[2]);
         if (privateKeyHacienda == null) {
             System.out.println("El fichero no contiene la clave privada de hacienda.");
             return;
         }
 
+        // Leer la clave publica de la Empresa del fichero
         PublicKey publicKeyEmpresa = Utils.leerClavePublica(args[3]);
         if(publicKeyEmpresa == null){
             System.out.println("El fichero no contiene la clave publica de la empresa.");
             return;
         }
+
+        //Desencriptar la clave DES usando la clave privada de Hacienda
+        Cipher rsaCipher = Cipher.getInstance("RSA");
+        rsaCipher.init(Cipher.DECRYPT_MODE, privateKeyHacienda);
+        byte[] claveDES = rsaCipher.doFinal(claveDESCifrada);
+
 
 
         
