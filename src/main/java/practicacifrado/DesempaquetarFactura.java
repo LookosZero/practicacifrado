@@ -42,8 +42,8 @@ public class DesempaquetarFactura {
         }
 
         // Leer la firma del paquete
-        byte[] firma = paquete.getContenidoBloque("firma");
-        if(firma == null){
+        byte[] firmaPaquete = paquete.getContenidoBloque("firma");
+        if(firmaPaquete == null){
             System.out.println("El paquete no contiene la firma.");
             return;
         }
@@ -73,13 +73,30 @@ public class DesempaquetarFactura {
         DESCipher.init(Cipher.DECRYPT_MODE, secretKey);
         byte[] facturaDescifrada = DESCipher.doFinal(facturaCifrada);
 
-        
-        
         //Crear la firma del resumen utilizando la clave publica de la empresa
         Signature firmaRecibida = Signature.getInstance("SHA256withRSA");
         firmaRecibida.initVerify(publicKeyEmpresa);
         firmaRecibida.update(facturaCifrada);
+        firmaRecibida.update(claveDESCifrada);
 
+        //Verificar la firma recibida con la firma del paquete
+        boolean verificada = firmaRecibida.verify(firmaPaquete);
+        if(verificada){
+            System.out.println("La firma es válida.");
+        }else{
+            System.out.println("La firma no es válida, el paquete podría haber sido alterado.");
+            return;
+        }
+        
+        // Verificar autoridad de sellado
+
+
+
+
+
+
+        // Escribir la factura a fichero JSON
+        
 
 
         
