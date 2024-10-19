@@ -6,10 +6,13 @@ import java.security.*;
 import java.security.spec.*;
 import java.util.stream.Stream;
 
-import javax.crypto.*;
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.crypto.interfaces.*;
 import javax.crypto.spec.*;
 
+import org.bouncycastle.jcajce.provider.digest.GOST3411;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class DesempaquetarFactura {
@@ -59,10 +62,23 @@ public class DesempaquetarFactura {
             return;
         }
 
-        //Desencriptar la clave DES usando la clave privada de Hacienda
+        // Desencriptar la clave DES usando la clave privada de Hacienda
         Cipher rsaCipher = Cipher.getInstance("RSA");
         rsaCipher.init(Cipher.DECRYPT_MODE, privateKeyHacienda);
         byte[] claveDES = rsaCipher.doFinal(claveDESCifrada);
+
+        // Desencriptar la factura usando la clave DES
+        SecretKey secretKey = new SecretKeySpec(claveDES, "DES");
+        Cipher DESCipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+        DESCipher.init(Cipher.DECRYPT_MODE, secretKey);
+        byte[] facturaDescifrada = DESCipher.doFinal(facturaCifrada);
+
+        
+        
+        //Crear la firma del resumen utilizando la clave publica de la empresa
+        Signature firmaRecibida = Signature.getInstance("SHA256withRSA");
+        firmaRecibida.initVerify(publicKeyEmpresa);
+        firmaRecibida.update(facturaCifrada);
 
 
 
