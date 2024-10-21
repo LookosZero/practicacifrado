@@ -74,8 +74,6 @@ public class SellarFactura {
         paquete.escribirPaquete(args[0]);
         System.out.println("Paquete sellado.");
 
-
-
     }
     
     private static boolean verificarFirma(byte[] firma, byte[] contenidoPaquete, PublicKey clavePublica){
@@ -90,6 +88,4 @@ public class SellarFactura {
             return false;
         }
     }
-
-    
 }
