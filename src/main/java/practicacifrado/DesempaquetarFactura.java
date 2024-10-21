@@ -1,7 +1,8 @@
 package practicacifrado;
 
 import java.io.*;
-
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.*;
 import java.security.spec.*;
 import java.util.stream.Stream;
@@ -96,15 +97,15 @@ public class DesempaquetarFactura {
 
 
         // Escribir la factura a fichero JSON
-        
-
-
+        String rutaFactura = args[1]; // Ruta del archivo JSON a escribir
+        Files.write(Paths.get(rutaFactura), facturaDescifrada);
+        System.out.println("Factura desempaquetada y guardada en: " + rutaFactura);
         
     }
 
     public static void mensajeAyuda() {
 		System.out.println("Desempaqueta la factura usando ");
-		System.out.println("\tSintaxis: java DesempaquetarFactura <nombre paquete> <fichero JSON factura> <path clave privada hacienda> <path clave publica hacienda>");
+		System.out.println("\tSintaxis: java DesempaquetarFactura <nombre paquete> <fichero JSON factura> <path clave privada hacienda> <path clave publica empresa>");
 		System.out.println();
 	}
 
