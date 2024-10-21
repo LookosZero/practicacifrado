@@ -43,10 +43,15 @@ public class SellarFactura {
             return;
         }
 
+        byte[] claveDESCifrada = paquete.getContenidoBloque("claveCifrada");
+        if(claveDESCifrada==null){
+            System.out.println("El paquete no contiene la clave cifrada.");
+            return;
+        }
 
         //obtenemos la firma del paquete y comprobamos que corresponda con la empresa
         byte[] firmaPaquete = paquete.getContenidoBloque("firma");        
-        if(!verificarFirma(firmaPaquete, contenidoPaquete, clavePublicaEmpresa)){
+        if(!verificarFirma(firmaPaquete, contenidoPaquete, claveDESCifrada, clavePublicaEmpresa)){
             System.out.println("La empresa que presenta la factura no es la misma que la que creó el paquete.");
             return;
         }
@@ -76,12 +81,15 @@ public class SellarFactura {
 
     }
     
-    private static boolean verificarFirma(byte[] firma, byte[] contenidoPaquete, PublicKey clavePublica){
+    private static boolean verificarFirma(byte[] firma, byte[] contenidoFactura, byte[] contenidoClaveCifrada, PublicKey clavePublica) {
         Signature signature;
         try {
             signature = Signature.getInstance("SHA256withRSA");
             signature.initVerify(clavePublica);
-            signature.update(contenidoPaquete);
+            // Actualizar con el contenido de la factura cifrada
+            signature.update(contenidoFactura);
+            // Actualizar con la clave DES cifrada
+            signature.update(contenidoClaveCifrada);
             return signature.verify(firma);
         } catch (Exception e) {
             e.printStackTrace();
