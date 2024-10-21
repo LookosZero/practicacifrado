@@ -21,7 +21,7 @@ public class Utils {
 
         KeyFactory keyFactoryRSA = KeyFactory.getInstance("RSA", "BC");
 
-        byte[] bufferPub = Files.readAllBytes(Paths.get(path + ".publica"));
+        byte[] bufferPub = Files.readAllBytes(Paths.get(path));
 
 		X509EncodedKeySpec clavePublicaSpec = new X509EncodedKeySpec(bufferPub);
 		PublicKey clavePublica = keyFactoryRSA.generatePublic(clavePublicaSpec);
@@ -34,7 +34,7 @@ public class Utils {
 
         KeyFactory keyFactoryRSA = KeyFactory.getInstance("RSA", "BC");
 
-        byte[] bufferPriv = Files.readAllBytes(Paths.get(path + ".privada"));
+        byte[] bufferPriv = Files.readAllBytes(Paths.get(path));
 
         PKCS8EncodedKeySpec clavePrivadaSpec = new PKCS8EncodedKeySpec(bufferPriv);
 		PrivateKey clavePrivada = keyFactoryRSA.generatePrivate(clavePrivadaSpec);

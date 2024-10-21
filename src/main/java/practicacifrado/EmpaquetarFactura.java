@@ -51,12 +51,12 @@ public class EmpaquetarFactura {
         Paquete paqueteEmpresa = new Paquete();
 
         // Inicializamos la clave en DES aleatoria con KeyGenerator que utilizara para cifrar la factura
-        KeyGenerator keyGen = KeyGenerator.getInstance("DES/ECB/PKCS5Padding");
+        KeyGenerator keyGen = KeyGenerator.getInstance("DES");
         keyGen.init(56);
         SecretKey secretKey = keyGen.generateKey();
 
         // Se utiliza la clase cipher para cifrar la factura con la secretKey que generamos en DES
-        Cipher DESCipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+        Cipher DESCipher = Cipher.getInstance("DES");
         DESCipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
         // Se cifra la factura utilizando doFinal()
