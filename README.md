@@ -1,6 +1,5 @@
-Para ejecutar los .java se utiliza el comando:
-
-java -cp "lib/bcprov-jdk18on-1.78.1.jar" src\main\java\practicacifrado\GenerarClaves.java a
+Para ejecutar GenerarClaves:
+java -cp "lib/bcprov-jdk18on-1.78.1.jar" src\main\java\practicacifrado\GenerarClaves.java Empresa
 
 Para ejecutar EmpaquetarEmpresa:
 java -cp "lib/bcprov-jdk18on-1.78.1.jar;target" practicacifrado.EmpaquetarFactura input\factura2203.json output\PaqueteEmpresa input\Hacienda.publica input\Empresa.privada
