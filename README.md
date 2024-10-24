@@ -18,6 +18,6 @@ java -cp "lib/bcprov-jdk18on-1.78.1.jar;target" practicacifrado.SellarFactura ou
 
 Para ejecutar DesempaquetarFactura:
 
-java -cp "lib/bcprov-jdk18on-1.78.1.jar;target" practicacifrado.DesempaquetarFactura output/PaqueteEmpresa output/factura.json input/Hacienda.privada input/Empresa.publica
+java -cp "lib/bcprov-jdk18on-1.78.1.jar;target" practicacifrado.DesempaquetarFactura output/PaqueteEmpresa output/factura.json input/Hacienda.privada input/Empresa.publica input/Sellado.publica
 
 (a es un atributo, en el archivo de ejemplo GenerarClaves crearia dos archivos a.publica y a.privada)

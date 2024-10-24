@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.security.*;
 import java.security.spec.*;
 import java.util.stream.Stream;
+import java.util.Date;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -19,7 +20,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 public class DesempaquetarFactura {
     public static void main(String[] args) throws Exception {
         
-        if(args.length != 4){
+        if(args.length != 5){
             mensajeAyuda();
 			return;
         }
@@ -48,8 +49,14 @@ public class DesempaquetarFactura {
             System.out.println("El paquete no contiene la firma.");
             return;
         }
+        // Leer la clave publica de Autoridad de Sellado del fichero
+        PublicKey publicKeySellado = Utils.leerClavePublica(args[4]);
+        if (publicKeySellado == null) {
+            System.out.println("El fichero no contiene la clave publica de autoridad de sellado.");
+            return;
+        }
 
-        // Leer las clave privada de Hacienda del fichero
+        // Leer la clave privada de Hacienda del fichero
         PrivateKey privateKeyHacienda = Utils.leerClavePrivada(args[2]);
         if (privateKeyHacienda == null) {
             System.out.println("El fichero no contiene la clave privada de hacienda.");
@@ -62,7 +69,18 @@ public class DesempaquetarFactura {
             System.out.println("El fichero no contiene la clave publica de la empresa.");
             return;
         }
-
+        // Leer la fecha
+        byte[] fecha = paquete.getContenidoBloque("fecha");
+        if(fecha==null){
+            System.out.println("El fichero no contiene la fecha.");
+            return;
+        }
+        //Leer el sello
+        byte[] sello = paquete.getContenidoBloque("sello");
+        if(sello==null){
+            System.out.println("El fichero no contiene el sello.");
+            return;
+        }
         // Desencriptar la clave DES usando la clave privada de Hacienda
         Cipher rsaCipher = Cipher.getInstance("RSA");
         rsaCipher.init(Cipher.DECRYPT_MODE, privateKeyHacienda);
@@ -90,9 +108,11 @@ public class DesempaquetarFactura {
         }
         
         // Verificar autoridad de sellado
-
-
-
+        if(!verificarSello(fecha, facturaCifrada, claveDESCifrada, firmaPaquete, sello, publicKeySellado)){
+            System.out.println("El sello del paquete no es valido.");
+            return;
+        }
+        System.out.println("El sello del paquete es valido.");
 
 
 
@@ -102,7 +122,15 @@ public class DesempaquetarFactura {
         System.out.println("Factura desempaquetada y guardada en: " + rutaFactura);
         
     }
-
+    public static boolean verificarSello(byte[] fecha, byte[] factura, byte[] clave, byte[] firma, byte[] sello, PublicKey publicKeySellado) throws Exception{
+        Signature signature = Signature.getInstance("SHA256withRSA");
+        signature.initVerify(publicKeySellado);
+        signature.update(fecha);
+        signature.update(factura);
+        signature.update(clave);
+        signature.update(firma);
+        return signature.verify(sello);
+    }
     public static void mensajeAyuda() {
 		System.out.println("Desempaqueta la factura usando ");
 		System.out.println("\tSintaxis: java DesempaquetarFactura <nombre paquete> <fichero JSON factura> <path clave privada hacienda> <path clave publica empresa>");

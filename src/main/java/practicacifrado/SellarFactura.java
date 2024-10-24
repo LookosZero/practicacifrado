@@ -25,7 +25,6 @@ public class SellarFactura {
         }
         //BouncyCastle
         Security.addProvider(new BouncyCastleProvider());
-        System.out.println("adldjfa");
         Paquete paquete = new Paquete(args[0]);
         PublicKey clavePublicaEmpresa=null;
         PrivateKey clavePrivadaSellado=null;
@@ -64,15 +63,13 @@ public class SellarFactura {
         Date fechaActual = new Date();
         paquete.anadirBloque("fecha", fechaActual.toString().getBytes());
         //creamos el sello
-        System.out.println("Generando sello");
         byte [] sello = generarSello(fechaActual, claveDESCifrada, facturaCifrada, firmaPaquete, clavePrivadaSellado);
-        System.out.println("Sello generado.");
         //añadimos el sello al paquete
         paquete.anadirBloque("sello", sello);
 
         //guardar paquete
         paquete.escribirPaquete(args[0]);
-        System.out.println("Paquete sell.");
+        System.out.println("Paquete sellado.");
 
     }
     
