@@ -1,5 +1,9 @@
 En la carpeta input estaran todos los ficheros de claves y en la carpeta output se generará el paquete.
 
+Compilar:
+javac -cp "lib/bcprov-jdk18on-1.78.1.jar" -d target src\main\java\practicacifrado\*.java
+
+
 Para ejecutar GenerarClaves:
 
 java -cp "lib/bcprov-jdk18on-1.78.1.jar" src\main\java\practicacifrado\GenerarClaves.java input\Empresa
