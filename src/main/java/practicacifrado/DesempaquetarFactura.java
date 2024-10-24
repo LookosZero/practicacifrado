@@ -83,6 +83,13 @@ public class DesempaquetarFactura {
             return;
         }
 
+        // Verificar autoridad de sellado
+        if (!verificarSello(fecha, facturaCifrada, claveDESCifrada, firmaPaquete, sello, publicKeySellado)) {
+            System.out.println("El sello del paquete no es valido.");
+            return;
+        }
+        System.out.println("El sello del paquete es valido.");
+
         //Verificar la firma del resumen utilizando la clave publica de la empresa
         Signature firmaRecibida = Signature.getInstance("SHA256withRSA");
         firmaRecibida.initVerify(publicKeyEmpresa);
@@ -97,13 +104,6 @@ public class DesempaquetarFactura {
             System.out.println("La firma no es válida, el paquete podría haber sido alterado.");
             return;
         }
-
-        // Verificar autoridad de sellado
-        if (!verificarSello(fecha, facturaCifrada, claveDESCifrada, firmaPaquete, sello, publicKeySellado)) {
-            System.out.println("El sello del paquete no es valido.");
-            return;
-        }
-        System.out.println("El sello del paquete es valido.");
 
         // Desencriptar la clave DES usando la clave privada de Hacienda
         Cipher rsaCipher = Cipher.getInstance("RSA");
