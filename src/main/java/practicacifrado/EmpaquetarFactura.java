@@ -34,7 +34,6 @@ public class EmpaquetarFactura {
             System.out.println("El fichero no contiene la factura.");
             return;
         }
-
         PublicKey publicKeyHacienda = Utils.leerClavePublica(args[2]);
         if (publicKeyHacienda == null) {
             System.out.println("El fichero no contiene la clave publica de hacienda.");
