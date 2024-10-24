@@ -14,8 +14,8 @@ import javax.crypto.spec.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class Utils {
-    
-    public static PublicKey leerClavePublica(String path) throws Exception{
+
+    public static PublicKey leerClavePublica(String path) throws Exception {
 
         Security.addProvider(new BouncyCastleProvider());
 
@@ -23,13 +23,13 @@ public class Utils {
 
         byte[] bufferPub = Files.readAllBytes(Paths.get(path));
 
-		X509EncodedKeySpec clavePublicaSpec = new X509EncodedKeySpec(bufferPub);
-		PublicKey clavePublica = keyFactoryRSA.generatePublic(clavePublicaSpec);
+        X509EncodedKeySpec clavePublicaSpec = new X509EncodedKeySpec(bufferPub);
+        PublicKey clavePublica = keyFactoryRSA.generatePublic(clavePublicaSpec);
 
         return clavePublica;
     }
 
-    public static PrivateKey leerClavePrivada(String path) throws Exception{
+    public static PrivateKey leerClavePrivada(String path) throws Exception {
         Security.addProvider(new BouncyCastleProvider());
 
         KeyFactory keyFactoryRSA = KeyFactory.getInstance("RSA", "BC");
@@ -37,10 +37,9 @@ public class Utils {
         byte[] bufferPriv = Files.readAllBytes(Paths.get(path));
 
         PKCS8EncodedKeySpec clavePrivadaSpec = new PKCS8EncodedKeySpec(bufferPriv);
-		PrivateKey clavePrivada = keyFactoryRSA.generatePrivate(clavePrivadaSpec);
+        PrivateKey clavePrivada = keyFactoryRSA.generatePrivate(clavePrivadaSpec);
 
         return clavePrivada;
     }
-
 
 }

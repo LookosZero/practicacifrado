@@ -20,11 +20,12 @@ import javax.crypto.spec.*;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class EmpaquetarFactura {
+
     public static void main(String[] args) throws Exception {
         if (args.length != 4) {
-			mensajeAyuda();
-			return;
-		}
+            mensajeAyuda();
+            return;
+        }
 
         Security.addProvider(new BouncyCastleProvider());
 
@@ -41,7 +42,7 @@ public class EmpaquetarFactura {
         }
 
         PrivateKey privateKeyEmpresa = Utils.leerClavePrivada(args[3]);
-        if(privateKeyEmpresa == null){
+        if (privateKeyEmpresa == null) {
             System.out.println("El fichero no contiene la clave privada de la empresa.");
             return;
         }
@@ -63,7 +64,7 @@ public class EmpaquetarFactura {
 
         //Se añade el bloque de la factura cifrada al paquete
         paqueteEmpresa.anadirBloque("facturaCifrada", facturaCifrada);
-         
+
         // Cifrar la clave publica de hacienda con RSA
         /*
          * La clave DES que se utilizo para cifrar la factura se cifra con la clave publica de hacienda,
@@ -91,9 +92,9 @@ public class EmpaquetarFactura {
 
         //Escribimos el paquete a un fichero
         paqueteEmpresa.escribirPaquete(args[1]);
-        
+
         System.out.println("Generado el paquete de la empresa.");
-        
+
     }
 
     private static byte[] leerFactura(String path) throws IOException {
@@ -101,9 +102,9 @@ public class EmpaquetarFactura {
     }
 
     public static void mensajeAyuda() {
-		System.out.println("Empaqueta la factura en un paquete cifrado que contiene la factura cifrada, la clave cifrada y la firma.");
-		System.out.println("\tSintaxis: java EmpaquetarFactura <JSON factura> <nombre paquete> <path ClavePublicaHacienda> <path ClavePrivadaEmpresa>");
-		System.out.println();
-	}
+        System.out.println("Empaqueta la factura en un paquete cifrado que contiene la factura cifrada, la clave cifrada y la firma.");
+        System.out.println("\tSintaxis: java EmpaquetarFactura <JSON factura> <nombre paquete> <path ClavePublicaHacienda> <path ClavePrivadaEmpresa>");
+        System.out.println();
+    }
 
 }

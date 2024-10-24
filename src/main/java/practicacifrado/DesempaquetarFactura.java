@@ -18,34 +18,35 @@ import org.bouncycastle.jcajce.provider.digest.GOST3411;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class DesempaquetarFactura {
+
     public static void main(String[] args) throws Exception {
-        
-        if(args.length != 5){
+
+        if (args.length != 5) {
             mensajeAyuda();
-			return;
+            return;
         }
 
         Security.addProvider(new BouncyCastleProvider());
-        
+
         Paquete paquete = new Paquete(args[0]);
-        
+
         // Leer la factura cifrada del paquete
         byte[] facturaCifrada = paquete.getContenidoBloque("facturaCifrada");
-        if(facturaCifrada == null){
+        if (facturaCifrada == null) {
             System.out.println("El paquete no contiene la factura.");
             return;
         }
 
         // Leer la clave DES cifrada del paquete
         byte[] claveDESCifrada = paquete.getContenidoBloque("claveCifrada");
-        if(claveDESCifrada == null){
+        if (claveDESCifrada == null) {
             System.out.println("El paquete no contiene la clave cifrada.");
             return;
         }
 
         // Leer la firma del paquete
         byte[] firmaPaquete = paquete.getContenidoBloque("firma");
-        if(firmaPaquete == null){
+        if (firmaPaquete == null) {
             System.out.println("El paquete no contiene la firma.");
             return;
         }
@@ -65,19 +66,19 @@ public class DesempaquetarFactura {
 
         // Leer la clave publica de la Empresa del fichero
         PublicKey publicKeyEmpresa = Utils.leerClavePublica(args[3]);
-        if(publicKeyEmpresa == null){
+        if (publicKeyEmpresa == null) {
             System.out.println("El fichero no contiene la clave publica de la empresa.");
             return;
         }
         // Leer la fecha
         byte[] fecha = paquete.getContenidoBloque("fecha");
-        if(fecha==null){
+        if (fecha == null) {
             System.out.println("El fichero no contiene la fecha.");
             return;
         }
         //Leer el sello
         byte[] sello = paquete.getContenidoBloque("sello");
-        if(sello==null){
+        if (sello == null) {
             System.out.println("El fichero no contiene el sello.");
             return;
         }
@@ -90,15 +91,15 @@ public class DesempaquetarFactura {
 
         //Verificar la firma recibida con la firma del paquete
         boolean verificada = firmaRecibida.verify(firmaPaquete);
-        if(verificada){
+        if (verificada) {
             System.out.println("La firma es válida.");
-        }else{
+        } else {
             System.out.println("La firma no es válida, el paquete podría haber sido alterado.");
             return;
         }
-        
+
         // Verificar autoridad de sellado
-        if(!verificarSello(fecha, facturaCifrada, claveDESCifrada, firmaPaquete, sello, publicKeySellado)){
+        if (!verificarSello(fecha, facturaCifrada, claveDESCifrada, firmaPaquete, sello, publicKeySellado)) {
             System.out.println("El sello del paquete no es valido.");
             return;
         }
@@ -119,9 +120,10 @@ public class DesempaquetarFactura {
         String rutaFactura = args[1]; // Ruta del archivo JSON a escribir
         Files.write(Paths.get(rutaFactura), facturaDescifrada);
         System.out.println("Factura desempaquetada y guardada en: " + rutaFactura);
-        
+
     }
-    public static boolean verificarSello(byte[] fecha, byte[] factura, byte[] clave, byte[] firma, byte[] sello, PublicKey publicKeySellado) throws Exception{
+
+    public static boolean verificarSello(byte[] fecha, byte[] factura, byte[] clave, byte[] firma, byte[] sello, PublicKey publicKeySellado) throws Exception {
         Signature signature = Signature.getInstance("SHA256withRSA");
         signature.initVerify(publicKeySellado);
         signature.update(fecha);
@@ -130,10 +132,11 @@ public class DesempaquetarFactura {
         signature.update(firma);
         return signature.verify(sello);
     }
+
     public static void mensajeAyuda() {
-		System.out.println("Desempaqueta la factura usando ");
-		System.out.println("\tSintaxis: java DesempaquetarFactura <nombre paquete> <fichero JSON factura> <path clave privada hacienda> <path clave publica empresa> <path clave publica sellado>");
-		System.out.println();
-	}
+        System.out.println("Desempaqueta la factura usando ");
+        System.out.println("\tSintaxis: java DesempaquetarFactura <nombre paquete> <fichero JSON factura> <path clave privada hacienda> <path clave publica empresa> <path clave publica sellado>");
+        System.out.println();
+    }
 
 }
