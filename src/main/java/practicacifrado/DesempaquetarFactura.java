@@ -133,7 +133,7 @@ public class DesempaquetarFactura {
     }
     public static void mensajeAyuda() {
 		System.out.println("Desempaqueta la factura usando ");
-		System.out.println("\tSintaxis: java DesempaquetarFactura <nombre paquete> <fichero JSON factura> <path clave privada hacienda> <path clave publica empresa>");
+		System.out.println("\tSintaxis: java DesempaquetarFactura <nombre paquete> <fichero JSON factura> <path clave privada hacienda> <path clave publica empresa> <path clave publica sellado>");
 		System.out.println();
 	}
 
