@@ -96,7 +96,6 @@ public class DesempaquetarFactura {
         firmaRecibida.update(facturaCifrada);
         firmaRecibida.update(claveDESCifrada);
 
-        //Verificar la firma recibida con la firma del paquete
         boolean verificada = firmaRecibida.verify(firmaPaquete);
         if (verificada) {
             System.out.println("La firma es válida.");
